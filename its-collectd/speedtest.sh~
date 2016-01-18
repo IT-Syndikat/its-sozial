@@ -1,0 +1,12 @@
+#!/bin/sh
+
+HOSTNAME="${COLLECTD_HOSTNAME:-localhost}"
+INTERVAL="${COLLECTD_INTERVAL:-300}"
+
+while sleep $INTERVAL; do
+	res=$(/usr/local/bin/speedtest)
+	DL=$(echo "$res" | grep -oe 'Download: \([0-9]*\)' | grep -oe '\([0-9.]*\)' )
+	UL=$(echo "$res" | grep -oe 'Upload: \([0-9]*\)' | grep -oe '\([0-9.]*\)' )
+
+	echo "PUTVAL \"$HOSTNAME/exec-speedtest/speedtest-speed\" interval=$INTERVAL N:$DL:$UL"
+done
